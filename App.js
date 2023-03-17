@@ -1,13 +1,45 @@
-import { StatusBar } from 'expo-status-bar';
+import React, { Component } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 
-export default function App() {
-  return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
-  );
+import { getRequest } from './api';
+
+export default class App extends Component {
+  constructor(props){
+    super(props);
+
+    this.state = {
+      loading: true,
+      data: null
+    }
+  }
+
+  componentDidMount(){
+    getRequest(
+      "https://api.chucknorris.io/jokes/random", 
+      (resJson) => {
+        this.setState({
+          loading: false,
+          data: resJson
+        })
+      },
+      (status) => {
+        console.log(status)
+      })
+  }
+
+  render(){
+    if(this.state.loading){
+      return (
+        <Text>Loading...</Text>
+      )
+    }else{
+      return (
+        <View style={styles.container}>
+          <Text>{this.state.data.value}</Text>
+        </View>
+      );
+    }
+  }
 }
 
 const styles = StyleSheet.create({
